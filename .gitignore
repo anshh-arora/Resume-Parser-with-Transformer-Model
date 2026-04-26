@@ -1,0 +1,20 @@
+.env
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.venv/
+venv/
+.DS_Store
+.idea/
+.vscode/
+*.egg-info/
+build/
+dist/
+
+# Local artifacts
+gradio_cached_examples/
+flagged/
+*.pdf
+!tests/fixtures/*.pdf
+data/score_history.json

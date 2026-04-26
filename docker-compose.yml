@@ -1,0 +1,26 @@
+services:
+  resume-parser:
+    build: .
+    image: resume-parser:latest
+    container_name: resume-parser
+    ports:
+      - "7860:7860"
+    environment:
+      # ── Ollama connectivity ───────────────────────────────────────
+      # We use COMPOSE_OLLAMA_HOST (not OLLAMA_HOST) to avoid collision
+      # with the local .env file.  Docker Compose ALWAYS reads .env for
+      # variable substitution, so ${OLLAMA_HOST:-...} would resolve to
+      # http://localhost:11434 (useless inside a container).
+      # Override for cloud:  COMPOSE_OLLAMA_HOST=https://ollama.com docker compose up
+      OLLAMA_HOST: ${COMPOSE_OLLAMA_HOST:-http://host.docker.internal:11434}
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-batiai/gemma4-e2b:q6}
+      OLLAMA_API_KEY: ${OLLAMA_API_KEY:-}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      GRADIO_SERVER_NAME: 0.0.0.0
+    volumes:
+      # Persist the score cache across container restarts.
+      - ./data:/app/data
+    extra_hosts:
+      # Lets `host.docker.internal` resolve on Linux too.
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
