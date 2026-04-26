@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-# Resume-Parser-with-Transformer-Model
-=======
-# Resume Parser
+# Resume Parser with Transformer Model
 
 An LLM-powered resume parser that extracts structured information from PDF and DOCX resumes and outputs clean JSON. Built using Ollama (local or cloud) with a Gradio web UI.
 
@@ -11,7 +8,7 @@ Upload a resume → get back contact info, skills, education, work experience, p
 
 ## What It Does
 
-- **Reads PDF and DOCX resumes** — drops in a file, extracts the text automatically.
+- **Reads PDF and DOCX resumes** — drops in a file, extracts the text automatically (including embedded hyperlinks from PDF annotations).
 - **Extracts structured data** using a transformer-based LLM (via Ollama):
   - Contact information (name, email, phone, location, LinkedIn, GitHub)
   - Professional summary
@@ -35,6 +32,22 @@ Upload a resume → get back contact info, skills, education, work experience, p
 
 ---
 
+## Advanced Features (Beyond Basic Requirements)
+
+| Feature | Description |
+|---------|-------------|
+| **4-Layer Anti-Hallucination Defense** | Schema-constrained generation → Sanitization → Source grounding → Section rescue. Catches fabricated URLs, bare domains, misplaced sections, and garbage entries automatically |
+| **PDF Hyperlink Extraction** | Extracts embedded hyperlink URLs from PDF annotation layers — catches LinkedIn/GitHub links that display as clickable text without a visible URL |
+| **JD Match Scoring Engine** | Calibrated resume-vs-job-description scoring across skills (50%), experience (35%), and education (15%) with matched/missing skills breakdown and recruiter-style verdict |
+| **Score Caching (SHA-256)** | Deterministic on-disk cache keyed by `SHA-256(resume_text + jd_text)` — same inputs return instantly without re-calling the model |
+| **Grammar-Constrained Generation** | Pydantic JSON schema passed to Ollama's `format` parameter, forcing valid structured output at the model level |
+| **Pre-loaded JD Library** | 4 built-in job descriptions across different roles for instant testing |
+| **Docker-Ready Deployment** | Multi-platform Docker setup with compose, volume-mounted score cache, and cross-platform host access |
+| **Comprehensive Test Suite** | 23 pytest tests covering extraction, schemas, parsing pipeline, grounding, garbage filtering, rescue logic, and score caching — all run offline |
+| **Programmatic API** | Usable as a Python library (`from resume_parser import parse_resume`) without the UI |
+
+---
+
 ## Project Structure
 
 ```
@@ -43,7 +56,7 @@ Upload a resume → get back contact info, skills, education, work experience, p
 ├── resume_parser/
 │   ├── __init__.py            # Public API exports
 │   ├── config.py              # Environment variable loading
-│   ├── extractors.py          # PDF / DOCX → plain text
+│   ├── extractors.py          # PDF / DOCX → plain text (incl. hyperlink extraction)
 │   ├── llm.py                 # Ollama client wrapper
 │   ├── logging_setup.py       # Coloured timestamped logging
 │   ├── parser.py              # Core parsing + anti-hallucination pipeline
@@ -162,7 +175,7 @@ docker compose up
 
 ### Parsing Pipeline
 
-1. **Extract** — `pdfplumber` (for PDFs) or `python-docx` (for DOCX) pulls raw text from the uploaded file.
+1. **Extract** — `pdfplumber` (for PDFs) or `python-docx` (for DOCX) pulls raw text from the uploaded file. For PDFs, hyperlink URLs are also extracted from the annotation layer (catches LinkedIn/GitHub links that display as clickable text without visible URLs).
 2. **Prompt** — the text is sent to the LLM with a system prompt defining the exact JSON schema expected.
 3. **Constrain** — the Pydantic schema is passed to Ollama's `format` parameter, forcing the model to generate valid JSON.
 4. **Sanitize** — garbage entries (e.g. `certifications_achievements_1_2_3...`) are filtered out.
@@ -296,4 +309,19 @@ jd = "We need an AI Engineer with LangGraph and Ollama experience…"
 score = score_against_jd(parsed, resume_text, jd)
 print(f"Overall: {score.overall_score}/100 — {score.verdict}")
 ```
->>>>>>> 70ba0f7 (Resume Parser with Transformer Model)
+
+---
+
+## Author
+
+**Ansh Arora** — AI Engineer
+
+- 📧 [ansharora.cs@gmail.com](mailto:ansharora.cs@gmail.com)
+- 💼 [LinkedIn](https://www.linkedin.com/in/ansh-arora-ai-engineer/)
+- 🐙 [GitHub](https://github.com/anshh-arora)
+
+---
+
+## License
+
+MIT License — see [LICENSE](./LICENSE) for details.

@@ -51,11 +51,27 @@ def extract_text(file_path: str | Path) -> str:
 
 def _from_pdf(path: Path) -> str:
     pages: list[str] = []
+    links: list[str] = []
     with pdfplumber.open(path) as pdf:
         for page in pdf.pages:
             pages.append(page.extract_text() or "")
-    log.debug("PDF: %d pages", len(pages))
-    return "\n".join(pages)
+            # Extract hyperlink URLs embedded as PDF annotations.
+            # Many resumes display "LinkedIn" / "GitHub" as clickable text
+            # without showing the full URL — pdfplumber's extract_text()
+            # only captures the visible text, so we must pull the URIs
+            # from the page's annotation layer separately.
+            try:
+                for annot in (page.annots or []):
+                    uri = (annot.get("uri") or "").strip()
+                    if uri and uri not in links:
+                        links.append(uri)
+            except Exception:
+                pass  # Some PDFs have malformed annotations; skip gracefully.
+    log.debug("PDF: %d pages, %d hyperlinks", len(pages), len(links))
+    text = "\n".join(pages)
+    if links:
+        text += "\n\n" + "\n".join(links)
+    return text
 
 
 def _from_docx(path: Path) -> str:

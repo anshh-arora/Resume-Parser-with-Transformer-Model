@@ -17,4 +17,5 @@ gradio_cached_examples/
 flagged/
 *.pdf
 !tests/fixtures/*.pdf
+!Ansh_Arora_*.pdf
 data/score_history.json

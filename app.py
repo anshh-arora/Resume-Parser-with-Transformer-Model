@@ -47,6 +47,21 @@ footer { display: none !important; }
 .banner { padding: 10px 14px; border-radius: 10px; margin-bottom: 12px; font-size: 14px; }
 .banner.ok   { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
 .banner.warn { background: #fffbeb; color: #92400e; border: 1px solid #fcd34d; }
+.sidebar-profile { text-align: center; padding: 12px 0; }
+.sidebar-profile h3 { margin: 0 0 4px; font-size: 20px; }
+.sidebar-profile p { margin: 0; color: #6b7280; font-size: 13px; }
+.sidebar-links { list-style: none; padding: 0; margin: 14px 0 0; }
+.sidebar-links li {
+  margin: 8px 0; padding: 8px 12px; border-radius: 8px;
+  background: #f3f4f6; transition: background 0.2s;
+}
+.sidebar-links li:hover { background: #e5e7eb; }
+.sidebar-links a {
+  text-decoration: none; color: #374151; font-size: 14px;
+  display: flex; align-items: center; gap: 8px;
+}
+.sidebar-links a:hover { color: #6366f1; }
+.sidebar-divider { border: none; border-top: 1px solid #e5e7eb; margin: 16px 0; }
 """
 
 
@@ -198,6 +213,32 @@ def build_app() -> gr.Blocks:
     banner_html = _startup_banner()
 
     with gr.Blocks(title="Resume Parser") as app:
+        with gr.Sidebar(label="Developer", open=False):
+            gr.HTML(
+                '<div class="sidebar-profile">'
+                '<h3>👤 Ansh Arora</h3>'
+                '<p>AI Engineer · Agentic AI · LLM Systems</p>'
+                '</div>'
+                '<hr class="sidebar-divider">'
+                '<ul class="sidebar-links">'
+                '<li><a href="https://www.linkedin.com/in/ansh-arora-ai-engineer/" target="_blank">'
+                '💼 LinkedIn — ansh-arora-ai-engineer</a></li>'
+                '<li><a href="https://github.com/anshh-arora" target="_blank">'
+                '🐙 GitHub — anshh-arora</a></li>'
+                '<li><a href="https://github.com/anshh-arora/Resume-Parser-with-Transformer-Model" target="_blank">'
+                '📂 This Project — Source Code</a></li>'
+                '<li><a href="mailto:ansharora.cs@gmail.com">'
+                '📧 ansharora.cs@gmail.com</a></li>'
+                '<li><a href="tel:+917217671081">'
+                '📞 +91 7217671081</a></li>'
+                '</ul>'
+                '<hr class="sidebar-divider">'
+                '<ul class="sidebar-links">'
+                '<li><a href="https://github.com/anshh-arora" target="_blank">'
+                '📑 Portfolio — github.com/anshh-arora</a></li>'
+                '</ul>'
+            )
+
         gr.HTML(
             '<div id="header"><h1>📄 Resume Parser</h1>'
             '<p>Transformer-powered extraction with optional JD scoring · '

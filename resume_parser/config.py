@@ -19,7 +19,7 @@ OLLAMA_HOST = os.getenv(
     "OLLAMA_HOST",
     "https://ollama.com" if OLLAMA_API_KEY else "http://localhost:11434",
 )
-OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "gpt-oss:120b")
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "batiai/gemma4-e2b:q6")
 
 JD_LIBRARY_PATH = DATA_DIR / "job_descriptions.json"
 SCORE_HISTORY_PATH = DATA_DIR / "score_history.json"
